@@ -88,3 +88,35 @@ func ContarPersonasPorDestino(tickets []Ticket, pais string) (int, string, error
 	//Retorno contador
 	return contador, paisElegido, nil
 }
+
+// Requerimiento 2
+func CantidadTicketsPorFranjaHoraria(tickets []Ticket) (int, int, int, int, error) {
+
+	//Declaro contadores
+	madrugada, manana, tarde, noche := 0, 0, 0, 0
+
+	//Recorro tickets
+	for _, ticket := range tickets {
+		//Obtengo hora y convierto a int
+		fraccionarHora := strings.Split(ticket.HoraVuelo, ":")
+		hora, err := strconv.Atoi(fraccionarHora[0])
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		//Comparo hora: madrugada (0 → 6), mañana (7 → 12), tarde (13 → 19), y noche (20 → 23)
+		switch {
+		case hora >= 0 && hora <= 6:
+			madrugada++
+		case hora >= 7 && hora <= 12:
+			manana++
+		case hora >= 13 && hora <= 19:
+			tarde++
+		case hora >= 20 && hora <= 23:
+			noche++
+		}
+	}
+
+	//Retorno contadores
+	return madrugada, manana, tarde, noche, nil
+}
