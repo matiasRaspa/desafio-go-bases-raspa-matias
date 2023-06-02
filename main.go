@@ -23,4 +23,12 @@ func main() {
 	}
 	//Muestro total
 	fmt.Printf("\n############### Requerimiento 1 ###############\nEl total de personas que viajan a %s es: %d\n", destino, totalPersonasPorDestino)
+
+	//Requerimiento 2
+	madrugada, manana, tarde, noche, err := tickets.CantidadTicketsPorFranjaHoraria(listaTickets)
+	if err != nil {
+		log.Fatal(err)
+	}
+	//Muestro cantidad de pasajeros por franja horaria
+	fmt.Printf("\n############### Requerimiento 2 ###############\nCantidad de pasajeros:\nPor la madrugada: %d\nPor la mañana: %d\nPor la tarde: %d\nPor la noche: %d\n", madrugada, manana, tarde, noche)
 }
