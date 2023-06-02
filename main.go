@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	
+
 	//Cargo datos
 	listaTickets, err := tickets.CargarTickets("tickets.csv")
 	if err != nil {
@@ -39,4 +39,27 @@ func main() {
 	}
 	//Muestro porcentaje
 	fmt.Printf("\n############### Requerimiento 3 ###############\nEl porcentaje de personas hacia %s en el dia de hoy es: %%%.1f\n", pais, porcentaje)
+
+	//Requerimiento 4
+	//Declaro canales para procesar las funciones
+	c1 := make(chan string)
+	c2 := make(chan string)
+	c3 := make(chan string)
+	//Llamo funcion que se va a ejecutar concurrentemente
+	go tickets.ProcesarFunciones(listaTickets, c1, c2, c3)
+	//Muestro lo que procesa cada canal
+	go func() {
+		for {
+			select {
+			case funcionProcesada := <-c1:
+				fmt.Println(funcionProcesada)
+			case funcionProcesada := <-c2:
+				fmt.Println(funcionProcesada)
+			case funcionProcesada := <-c3:
+				fmt.Println(funcionProcesada)
+			}
+		}
+	}()
+	//Detener ejecucion
+	fmt.Scanln()
 }

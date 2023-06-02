@@ -1,7 +1,9 @@
 package tickets
 
 import (
+	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"strconv"
 	"strings"
@@ -141,4 +143,54 @@ func PorcentajeDePasajerosPaisPorDia(tickets []Ticket, pais string) (float64, st
 
 	//Retorno porcentaje
 	return porcentaje, paisElegido, nil
+}
+
+// Requerimiento 4
+func ProcesarFunciones(listaTickets []Ticket, canal ...chan string) {
+	//Genero una lista con los paises de todos los tickets
+	var listaDePaises []string
+	for _, ticket := range listaTickets {
+		listaDePaises = append(listaDePaises, ticket.PaisDestino)
+	}
+	//Genero un mapa para quitar los paises repetidos de la lista
+	elementosUnicos := make(map[string]bool)
+	listaDePaisesSinRepetir := []string{}
+
+	//Agrego paises y si esta repetido lo ignoro
+	for _, consultarPaisRepetido := range listaDePaises {
+		if !elementosUnicos[consultarPaisRepetido] {
+			elementosUnicos[consultarPaisRepetido] = true
+			listaDePaisesSinRepetir = append(listaDePaisesSinRepetir, consultarPaisRepetido)
+		}
+	}
+
+	//Genero un bucle que puede ser infinito pero lo seteo en 3
+	for i := 0; i < 3; i++ {
+		//Genero un numero aleatorio que va a representar un pais al azar
+		numeroAleatorio := rand.Intn(len(listaDePaisesSinRepetir))
+
+		//Requerimiento 1
+		totalPersonasPorDestino, destino, err := ContarPersonasPorDestino(listaTickets, listaDePaisesSinRepetir[numeroAleatorio])
+		if err != nil {
+			log.Fatal(err)
+		}
+		//Muestro total
+		canal[0] <- fmt.Sprintf("\n############### Requerimiento 1 (como GOROUTINE) ###############\nEl total de personas que viajan a %s es: %d\n", destino, totalPersonasPorDestino)
+
+		//Requerimiento 2
+		madrugada, manana, tarde, noche, err := CantidadTicketsPorFranjaHoraria(listaTickets)
+		if err != nil {
+			log.Fatal(err)
+		}
+		//Muestro cantidad de pasajeros por franja horaria
+		canal[1] <- fmt.Sprintf("\n############### Requerimiento 2 (como GOROUTINE) ###############\nCantidad de pasajeros:\nPor la madrugada: %d\nPor la mañana: %d\nPor la tarde: %d\nPor la noche: %d\n", madrugada, manana, tarde, noche)
+
+		//Requerimiento 3
+		porcentaje, pais, err := PorcentajeDePasajerosPaisPorDia(listaTickets, listaDePaisesSinRepetir[numeroAleatorio])
+		if err != nil {
+			log.Fatal(err)
+		}
+		//Muestro porcentaje
+		canal[2] <- fmt.Sprintf("\n############### Requerimiento 3 (como GOROUTINE) ###############\nEl porcentaje de personas hacia %s en el dia de hoy es: %%%.1f\n", pais, porcentaje)
+	}
 }
