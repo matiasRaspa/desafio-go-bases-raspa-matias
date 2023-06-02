@@ -50,7 +50,8 @@ func CargarTickets(archivo string) ([]Ticket, error) {
 		paisDestino := e[3]
 		horaVuelo := e[4]
 		//Convierto string a float
-		precio, err := strconv.ParseFloat(e[5], 64)
+		parseando := strings.TrimSpace(e[5])
+		precio, err := strconv.ParseFloat(parseando, 64)
 		if err != nil {
 			log.Fatal(err)
 		}
