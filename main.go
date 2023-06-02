@@ -31,4 +31,12 @@ func main() {
 	}
 	//Muestro cantidad de pasajeros por franja horaria
 	fmt.Printf("\n############### Requerimiento 2 ###############\nCantidad de pasajeros:\nPor la madrugada: %d\nPor la mañana: %d\nPor la tarde: %d\nPor la noche: %d\n", madrugada, manana, tarde, noche)
+
+	//Requerimiento 3
+	porcentaje, pais, err := tickets.PorcentajeDePasajerosPaisPorDia(listaTickets, "Australia")
+	if err != nil {
+		log.Fatal(err)
+	}
+	//Muestro porcentaje
+	fmt.Printf("\n############### Requerimiento 3 ###############\nEl porcentaje de personas hacia %s en el dia de hoy es: %%%.1f\n", pais, porcentaje)
 }

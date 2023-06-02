@@ -120,3 +120,25 @@ func CantidadTicketsPorFranjaHoraria(tickets []Ticket) (int, int, int, int, erro
 	//Retorno contadores
 	return madrugada, manana, tarde, noche, nil
 }
+
+// Requerimiento 3
+func PorcentajeDePasajerosPaisPorDia(tickets []Ticket, pais string) (float64, string, error) {
+
+	//Declaro contador
+	contador := 0
+	//Declaro pais elegido para mostrar en mensaje
+	paisElegido := pais
+
+	//Recorro tickets
+	for _, ticket := range tickets {
+		if ticket.PaisDestino == pais {
+			contador++
+		}
+	}
+
+	//Calculo porcentaje
+	porcentaje := float64(contador) * 100 / float64(len(tickets))
+
+	//Retorno porcentaje
+	return porcentaje, paisElegido, nil
+}
